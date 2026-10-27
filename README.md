@@ -56,6 +56,24 @@ cd NFL-Model
 
 **Note:** A runnable demo script and sample dataset will be added to the repository. Update this section with the exact command once the demo is implemented.
 
+## Installation
+
+Install the required libraries:
+
+```bash
+python -m pip install pandas scikit-learn
+```
+
+## Run the demonstration
+
+From the root directory of the repository, run:
+
+```bash
+python bin/train_demo.py
+```
+
+The script trains a small example classifier and prints a demonstration MVP probability. It uses fictional sample data and is not the final NFL MVP model.
+
 ## Project Workflow
 
 1. Retrieve NFL player statistics through the SportsDataIO API.
