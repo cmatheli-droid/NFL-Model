@@ -1,32 +1,36 @@
 
 import pandas as pd
+from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
-# Small example dataset for demonstrating the workflow
-data = pd.DataFrame({
-    "passing_yards": [300, 250, 350, 180, 320, 200, 280, 150],
-    "passing_tds":   [3, 2, 4, 1, 3, 1, 2, 0],
-    "rushing_yards": [20, 40, 15, 80, 30, 60, 25, 90],
-    "mvp":            [1, 0, 1, 0, 1, 0, 0, 0],
-})
+# Load the NFL data from your notebook
+data = pd.read_csv("nfl_mvp_features.csv")
 
-features = ["passing_yards", "passing_tds", "rushing_yards"]
-X = data[features]
-y = data["mvp"]
-
-model = RandomForestClassifier(n_estimators=50, random_state=42)
-model.fit(X, y)
-
-# Demonstrate a prediction for a hypothetical player
-player = pd.DataFrame([{
-    "passing_yards": 320,
-    "passing_tds": 3,
-    "rushing_yards": 25,
-}])
-
-probability = model.predict_proba(player)[0][
-    list(model.classes_).index(1)
+# Choose the player statistics used by the model
+features = [
+    "PassingYards",
+    "PassingTouchdowns",
+    "RushingYards",
+    "RushingTouchdowns",
+    "ReceivingYards",
+    "ReceivingTouchdowns"
 ]
 
-print(f"Demo MVP probability: {probability:.1%}")
-print("This is a demonstration using fictional sample data.")
+# Check whether MVP labels are available
+if "MVP" not in data.columns:
+    print("NFL data loaded successfully!")
+    print("MVP labels are missing. Add historical MVP winners to train the model.")
+else:
+    data = data.dropna(subset=features + ["MVP"])
+    X = data[features]
+    y = data["MVP"]
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
+
+    model = RandomForestClassifier(random_state=42)
+    model.fit(X_train, y_train)
+
+    print("Model trained successfully!")
+    print("Model accuracy:", model.score(X_test, y_test))
